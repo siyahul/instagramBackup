@@ -20,7 +20,7 @@ import {
       case 'USER_FROM_LOCALSTORAGE':
         return { ...state, loading: false, userInfo: action.payload };
       case USER_LOGOUT:
-        return {};
+        return {}
       default:
         return { ...state };
     }
@@ -34,8 +34,6 @@ import {
         return { ...state, loading: false, userInfo: action.payload,error:null };
       case USER_SIGNUP_FAILED:
         return { ...state, loading: false, error: action.payload };
-      case USER_SIGN_LOGOUT:
-        return {};
       default:
         return { ...state };
     }

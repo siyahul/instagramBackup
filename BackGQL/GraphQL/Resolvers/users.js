@@ -18,7 +18,7 @@ const genarateToken = (user) => {
       userName: user.userName,
     },
     SECRET_KEY,
-    { expiresIn: 30 }
+    { expiresIn: 60*60 }
   );
 };
 
@@ -153,6 +153,7 @@ const usersResolvers = {
         email,
         userName,
         password,
+        photoUrl:"",
         createdAt: new Date().toISOString(),
         followers: [],
         followings: [],

@@ -10,6 +10,7 @@ import {
   USER_SIGN_LOGOUT,
 } from "../Constants/userConstants";
 import jwtDecode from "jwt-decode";
+import { postUpdate } from "./postActions";
 
 export const userSignin = ({token}) => async (dispatch) => {
     const user = jwtDecode(token);
@@ -23,8 +24,10 @@ export const userSignin = ({token}) => async (dispatch) => {
 
 export const userSignOut = () => (dispatch) => {
   AsyncStorage.removeItem('token').then(() => {
+    const data= null;
+    dispatch(postUpdate(data));
     dispatch({
-      type: USER_LOGOUT,
+      type: "USER_LOGOUT",
     });
   }).catch((error) => {
     console.log(error);

@@ -25,6 +25,8 @@ const reducer = combineReducers({
   posts: postsReducer,
   stories: storiesReducer,
 });
+
+
 let composeEnhancer = compose;
 if (__DEV__) {
   composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

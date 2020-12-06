@@ -13,19 +13,10 @@ import { styles } from "./style";
 const Footer = ({ post, handleLike, id }) => {
   const [postedOn, setPostedOn] = useState("1 min ago");
   const likes = String(post?.likes.length);
-  const anim = useRef(new Animated.Value(0)).current;
 
-  const bounce = Animated.spring(anim, {
-    toValue: 1,
-    useNativeDriver: true,
-  });
   const handleLikes = () => {
-    handleLike(id, post.image.liked ? false : true);
-    bounce.start();
+    handleLike(id, post.liked ? false : true);
   };
-  useEffect(() => {
-    bounce.start();
-  }, [post?.image?.liked]);
 
   useEffect(() => {
     const postedBefore = postedSince();
@@ -76,12 +67,12 @@ const Footer = ({ post, handleLike, id }) => {
         <View style={styles.socialIcons}>
           <View>
             <TouchableWithoutFeedback onPress={handleLikes}>
-              {post?.image?.liked ? (
-                <Animated.View
-                  style={[styles.socialIcon, { transform: [{ scale: anim }] }]}
+              {post?.liked ? (
+                <View
+                  style={[styles.socialIcon]}
                 >
                   <FontAwesomeIcon icon={faHeart} color={"red"} size={24} />
-                </Animated.View>
+                </View>
               ) : (
                 <View style={[styles.socialIcon]}>
                   <FontAwesomeIcon

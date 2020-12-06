@@ -12,9 +12,20 @@ export const postUpdate = (data) => async (dispatch) => {
   });
 };
 
-export const fetchPosts = ({getNews}) => async (dispatch) => {
+export const fetchPosts = (data) => async (dispatch,getState) => {
+    const value = Object.values(data)[0]
+    const newValue = value.map((post) =>{
+      const {userSignIn:{userInfo}} = getState();
+      const liked = post.likes.find(like => like.userId === userInfo?.id)
+      if(liked){
+        return {...post,liked: true}
+      }else{
+        return {...post,liked: false}
+      }
+    })
+    
     dispatch({
       type:LIST_POSTS_SUCCESS,
-      payload: getNews,
+      payload: newValue,
     })
 };
