@@ -1,9 +1,10 @@
 const { ApolloServer, PubSub } = require("apollo-server");
 const mongoose = require("mongoose");
 const typeDefs = require("./GraphQL/typedefs");
-const resolvers = require("./GraphQL/resolvers");
+const resolvers = require("./GraphQL/Resolvers");
 const { MONGODB } = require("./config");
 const checkAuth = require("./utils/auth-verify");
+
 mongoose
   .connect(MONGODB, {
     useNewUrlParser: true,

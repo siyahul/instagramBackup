@@ -30,14 +30,13 @@ const Login = () => {
   const [errors, setErrors] = useState(null);
   const [loginReq, { loading }] = useMutation(LOGIN, {
     update(proxy, result) {
-      console.log(result);
       setLoginInfo(result);
     },
     onError: (error) => {
       if (error?.graphQLErrors[0]?.extensions?.errors)
         setErrors(error.graphQLErrors[0].extensions.errors);
       if (error.networkError) {
-        setErrors({networkError:"network error"});
+        setErrors({ networkError: "network error" });
       }
     },
     variables: { userName: email, password: password },
@@ -60,13 +59,14 @@ const Login = () => {
       });
     }
     if (loginInfo) {
-      const {data:{login}} = loginInfo;
+
+      const {
+        data: { login },
+      } = loginInfo;
+
       dispatch(signIn(login));
-      
-      setErrors(null);
     }
   }, [loginInfo, loading, errors]);
-  console.log(loginInfo);
   return (
     <SafeAreaView style={styles.container}>
       <View>
@@ -92,7 +92,11 @@ const Login = () => {
         {userSignIn.loading ? (
           <Loading color="gray" />
         ) : (
-          <Button title="Login" onPress={()=>loginReq()} disabled={userSignIn.loading} />
+          <Button
+            title="Login"
+            onPress={() => loginReq()}
+            disabled={userSignIn.loading}
+          />
         )}
       </View>
     </SafeAreaView>

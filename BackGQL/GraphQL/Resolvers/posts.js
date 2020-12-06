@@ -77,8 +77,7 @@ module.exports = {
       }
     },
     async getNews(_, __, context) {
-      const { id } = checkAuth(context);
-      console.log(id);
+      const { id } = checkAuth(context)
       const user = await User.findById(id);
       const posts = await Post.find().sort({ createdAt: -1 });
       const postOfFollowings = posts.filter((post) => {

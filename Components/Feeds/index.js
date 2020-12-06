@@ -40,16 +40,15 @@ const FETCH_NEWS_QUERY = gql`
 `;
 
 const Feeds = () => {
-  const { posts, userSignIn } = useSelector((state) => state);
-  //const { data } = posts;
+  const { posts } = useSelector((state) => state);
   const dispatch = useDispatch();
-  const { userInfo } = userSignIn;
 
   const { loading, data, error } = useQuery(FETCH_NEWS_QUERY, {
     onError: (errors) => {
       console.log(errors);
     },
   });
+
 
   useEffect(() => {
     console.log(loading);
@@ -63,27 +62,15 @@ const Feeds = () => {
     }
   }, [loading, data, error]);
 
-  console.log(posts.data);
-
   const handleLike = (id, value) => {
-    const newPosts = [...data];
-    newPosts[id].image.liked = value;
-    const indexOfCurrentUser = newPosts[id].image.likesCount.indexOf(
-      userInfo._id
-    );
-    data[id].image.liked
-      ? newPosts[id].image.likesCount.push(userInfo._id)
-      : newPosts[id].image.likesCount.splice(indexOfCurrentUser, 1);
-    dispatch(postUpdate(newPosts));
+    console.log("liked");
   };
   return (
     <FlatList
       data={posts.data}
-      renderItem={
-        ({ item, index }) => (
+      renderItem={({ item, index }) => (
         <Post post={item} index={index} handleLike={handleLike} />
-      )
-      }
+      )}
       keyExtractor={(item, index) => String(index)}
       ListHeaderComponent={Stories}
       ListFooterComponent={Loading}

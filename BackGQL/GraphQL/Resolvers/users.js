@@ -18,7 +18,7 @@ const genarateToken = (user) => {
       userName: user.userName,
     },
     SECRET_KEY,
-    { expiresIn: "1h" }
+    { expiresIn: 30 }
   );
 };
 

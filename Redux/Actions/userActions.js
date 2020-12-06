@@ -9,10 +9,11 @@ import {
   USER_SIGNUP_SUCCESS,
   USER_SIGN_LOGOUT,
 } from "../Constants/userConstants";
+import jwtDecode from "jwt-decode";
 
-export const userSignin = (data) => async (dispatch) => {
-    const user = data;
-    AsyncStorage.setItem('userInfo',JSON.stringify(data)).then(() => dispatch({
+export const userSignin = ({token}) => async (dispatch) => {
+    const user = jwtDecode(token);
+    AsyncStorage.setItem('token',JSON.stringify(token)).then(() => dispatch({
       type: USER_SIGNIN_SUCCESS,
       payload: user,
     })).catch((err) => {
@@ -21,12 +22,9 @@ export const userSignin = (data) => async (dispatch) => {
 };
 
 export const userSignOut = () => (dispatch) => {
-  AsyncStorage.removeItem('userInfo').then(() => {
+  AsyncStorage.removeItem('token').then(() => {
     dispatch({
       type: USER_LOGOUT,
-    });
-    dispatch({
-      type: USER_SIGN_LOGOUT,
     });
   }).catch((error) => {
     console.log(error);
