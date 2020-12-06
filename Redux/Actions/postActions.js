@@ -16,11 +16,13 @@ export const fetchPosts = (data) => async (dispatch,getState) => {
     const value = Object.values(data)[0]
     const newValue = value.map((post) =>{
       const {userSignIn:{userInfo}} = getState();
-      const liked = post.likes.find(like => like.userId === userInfo?.id)
+      const liked = post.likes.find(like => like.userId === userInfo?.id);
+      const likes = post.likes.map((like) => like.userId);
+
       if(liked){
-        return {...post,liked: true}
+        return {...post,liked: true,likes}
       }else{
-        return {...post,liked: false}
+        return {...post,liked: false,likes}
       }
     })
     
