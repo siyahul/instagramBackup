@@ -10,27 +10,51 @@ import {
 } from "../Constants/userConstants";
 import jwtDecode from "jwt-decode";
 import { postUpdate } from "./postActions";
+import axios from "axios";
 
-export const userSignin = ({token}) => async (dispatch) => {
-    const user = jwtDecode(token);
-    user.token = token;
-    AsyncStorage.setItem('token',token).then(() => dispatch({
-      type: USER_SIGNIN_SUCCESS,
-      payload: user,
-    })).catch((err) => {
-      throw new Error(err);
+export const userSignin = (userName, password) => async (dispatch) => {
+  axios
+    .post("http://192.168.1.12:5000", {
+      query:
+        "mutation Login($userName: String!, $password: String!){login(userName:$userName,password:$password){id token userName} }",
+      variables: {
+        userName,
+        password,
+      },
     })
+    .then(({ data }) => {
+      const token = data.data.login.token;
+      const user = jwtDecode(token);
+      user.token = token;
+      AsyncStorage.setItem("token",token)
+        .then(() => {
+          dispatch({
+            type: USER_SIGNIN_SUCCESS,
+            payload: user,
+          });
+        })
+        .catch((err) => {
+          dispatch({
+            type: USER_SIGNIN_FAIL,
+            payload: err,
+          });
+        });
+    })
+    .catch((err) => {
+      dispatch({ type: USER_SIGNIN_FAIL, payload: err });
+    });
 };
 
 export const userSignOut = () => (dispatch) => {
-  AsyncStorage.removeItem('token').then(() => {
-    const data= null;
-    dispatch(postUpdate(data));
-    dispatch({
-      type: "USER_LOGOUT",
+  AsyncStorage.removeItem("token")
+    .then(() => {
+      const data = null;
+      dispatch(postUpdate(data));
+      dispatch({
+        type: "USER_LOGOUT",
+      });
+    })
+    .catch((error) => {
+      console.log(error);
     });
-  }).catch((error) => {
-    console.log(error);
-  })
 };
-

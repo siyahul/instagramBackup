@@ -1,25 +1,19 @@
 import React, { useState } from "react";
 import { View, TextInput, Image, Button, SafeAreaView } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Loading from "../Loading";
+import {userSignin} from "../../Redux/Actions/userActions";
 import { styles } from "./style";
-
-const LOGIN = gql`
-  mutation Login($userName: String!, $password: String!) {
-    login(userName: $userName, password: $password) {
-      token
-      id
-      email
-      userName
-      createdAt
-    }
-  }
-`;
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch()
   const userSignIn = useSelector((state) => state.userSignIn);
+
+  const loginReq = () => {
+    dispatch(userSignin(email,password));
+  };
 
   return (
     <SafeAreaView style={styles.container}>

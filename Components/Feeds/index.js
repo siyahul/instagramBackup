@@ -1,13 +1,25 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { FlatList } from "react-native";
 import Post from "../Post";
 import Stories from "../Stories";
 import { postUpdate } from "../../Redux/Actions/postActions.js";
 import Loading from "../Loading";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPosts } from "../../Redux/Actions/postActions";
 
 const Feeds = () => {
-  
   const [indexOfPost, setIndexOfPost] = useState(0);
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state);
+
+  const {
+    userSignIn: { userInfo },
+    posts,
+  } = state;
+
+  useEffect(() => {
+    dispatch(fetchPosts());
+  }, []);
 
   const handleLike = (id, value) => {
     setIndexOfPost(id);
@@ -16,10 +28,8 @@ const Feeds = () => {
     const uid = userInfo.id;
     newData[id].liked = value;
     if (value) {
-      like({ variables: { postId: String(newData[id].id) } });
       newData[id].likes.unshift(uid);
     } else {
-      unLike({ variables: { postId: String(newData[id].id) } });
       const positionOfLike = newData[id].likes.indexOf(uid);
       newData[id].likes.splice(positionOfLike, 1);
     }

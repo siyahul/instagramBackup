@@ -98,6 +98,7 @@ const usersResolvers = {
       }
     },
     async login(_, { userName, password }) {
+      console.log("login");
       const { errors, valid } = validateLoginInput(userName, password);
       if (!valid) {
         throw new UserInputError("Errors", { errors });
