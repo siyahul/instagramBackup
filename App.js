@@ -1,44 +1,11 @@
-import React from 'react';
+import React from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { AppLoading } from "expo";
-import {
-  ApolloClient,
-  ApolloProvider,
-  createHttpLink,
-  InMemoryCache,
-} from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
-
 import { useFonts } from "expo-font";
-import "react-native-gesture-handler";
-
 import { NavigationContainer } from "@react-navigation/native";
 import Routes from "./Routes";
 import store from "./Redux/store";
 import { Provider } from "react-redux";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const httpLink = createHttpLink({
-  uri: "http://192.168.1.12:5000",
-});
-
-const authLink = setContext(async(_,{headers}) => {
-  // get the authentication token from local storage if it exists
-  const userInfo = await AsyncStorage.getItem('token');
-  const token = userInfo? JSON.parse(userInfo):"";
-  // return the headers to the context so httpLink can read them
-  return {
-    headers: {
-      ...headers,
-      Authorization: token ? `Bearer ${token}`:"",
-    },
-  };
-});
-
-const client = new ApolloClient({
-  link: authLink.concat(httpLink),
-  cache: new InMemoryCache(),
-});
 
 export default function App() {
   //importing fonts with expo
@@ -52,14 +19,11 @@ export default function App() {
   } else {
     return (
       <Provider store={store}>
-        {/* Redux Provider */}
-        <ApolloProvider client={client}>
-          <NavigationContainer>
-            <SafeAreaView style={styles.container}>
-              <Routes />
-            </SafeAreaView>
-          </NavigationContainer>
-        </ApolloProvider>
+        <NavigationContainer>
+          <SafeAreaView style={styles.container}>
+            <Routes />
+          </SafeAreaView>
+        </NavigationContainer>
       </Provider>
     );
   }

@@ -8,7 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "@apollo/client": "^3.3.3",
+    "@apollo/client": "^3.3.4",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-regular-svg-icons": "^5.15.1",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
@@ -21,6 +21,7 @@
     "expo": "~39.0.2",
     "expo-linear-gradient": "~8.3.0",
     "expo-status-bar": "~1.0.2",
+    "fiction-expo-restart": "^1.0.5",
     "graphql": "^15.4.0",
     "jwt-decode": "^3.1.2",
     "react": "16.13.1",
@@ -28,6 +29,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.4.tar.gz",
     "react-native-gesture-handler": "~1.7.0",
     "react-native-reanimated": "~1.13.0",
+    "react-native-restart": "0.0.17",
     "react-native-safe-area-context": "3.1.4",
     "react-native-screens": "~2.10.1",
     "react-native-svg": "^12.1.0",
@@ -35,7 +37,8 @@
     "react-native-web": "~0.13.12",
     "react-redux": "^7.2.2",
     "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "subscriptions-transport-ws": "^0.9.18"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0"

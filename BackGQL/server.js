@@ -22,15 +22,16 @@ const server = new ApolloServer({
   resolvers,
   context: ({ req, connection }) => ({ req, pubSub, connection }),
   subscriptions: {
-    onConnect: ({ Autherization }) => {
+    onConnect: ({authorization}) => {
       const context = {
         req: {
           headers: {
-            autherization: Autherization,
+            authorization,
           },
         },
       };
       const user = checkAuth(context);
+      console.log(user);
       return {
         currentUser: user,
       };

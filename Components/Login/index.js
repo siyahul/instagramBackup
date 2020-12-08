@@ -1,13 +1,6 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, TextInput, Image, Button, SafeAreaView } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import { userSignin as signIn } from "../../Redux/Actions/userActions";
-import {
-  USER_SIGNIN_FAIL,
-  USER_SIGNIN_REQUEST,
-} from "../../Redux/Constants/userConstants";
+import { useSelector } from "react-redux";
 import Loading from "../Loading";
 import { styles } from "./style";
 
@@ -26,47 +19,8 @@ const LOGIN = gql`
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loginInfo, setLoginInfo] = useState(null);
-  const [errors, setErrors] = useState(null);
-  const [loginReq, { loading }] = useMutation(LOGIN, {
-    update(proxy, result) {
-      setLoginInfo(result);
-    },
-    onError: (error) => {
-      if (error?.graphQLErrors[0]?.extensions?.errors)
-        setErrors(error.graphQLErrors[0].extensions.errors);
-      if (error.networkError) {
-        setErrors({ networkError: "network error" });
-      }
-    },
-    variables: { userName: email, password: password },
-  });
-
-  const dispatch = useDispatch();
   const userSignIn = useSelector((state) => state.userSignIn);
 
-  useEffect(() => {
-    if (loading) {
-      dispatch({
-        type: USER_SIGNIN_REQUEST,
-      });
-    }
-    if (errors) {
-      console.log(errors);
-      dispatch({
-        type: USER_SIGNIN_FAIL,
-        payload: errors,
-      });
-    }
-    if (loginInfo) {
-
-      const {
-        data: { login },
-      } = loginInfo;
-
-      dispatch(signIn(login));
-    }
-  }, [loginInfo, loading, errors]);
   return (
     <SafeAreaView style={styles.container}>
       <View>

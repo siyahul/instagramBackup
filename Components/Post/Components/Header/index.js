@@ -6,7 +6,6 @@ import ProfilePicture from '../../../ProfilePicture'
 import { styles } from './style'
 
 const Header = ({uri,name}) => {
-    console.log("uri",uri);
     return (
         <View style={styles.container}>
             <ProfilePicture uri={uri} size={'small'}/>
