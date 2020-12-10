@@ -1,5 +1,6 @@
-/* 
-const FETCH_NEWS_QUERY = gql`
+import { gql } from "@apollo/client";
+
+export const FETCH_NEWS_QUERY = gql`
 query {
   getNews {
     id
@@ -31,7 +32,7 @@ query {
 }
 `;
 
-const LIKE_MUTATION = gql`
+export const LIKE_MUTATION = gql`
 mutation LikePost($postId: ID!) {
   likePost(postId: $postId) {
     user {
@@ -41,7 +42,7 @@ mutation LikePost($postId: ID!) {
 }
 `;
 
-const UNLIKE_MUTATION = gql`
+export const UNLIKE_MUTATION = gql`
 mutation LikePost($postId: ID!) {
   unLikePost(postId: $postId) {
     user {
@@ -51,7 +52,7 @@ mutation LikePost($postId: ID!) {
 }
 `;
 
-const GET_NEWS_SUBSCRIPTION = gql`
+export const GET_NEWS_SUBSCRIPTION = gql`
 subscription {
   newPostFromFollowings {
     id
@@ -83,7 +84,7 @@ subscription {
 }
 `;
 
-const LOGIN = gql`
+export const LOGIN_MUTATION = gql`
   mutation Login($userName: String!, $password: String!) {
     login(userName: $userName, password: $password) {
       token
@@ -94,24 +95,10 @@ const LOGIN = gql`
     }
   }
 `;
- */
+ 
 
-const query = {
-  query: `
- mutation Login($userName: String!, $password: String!) {
-   login(userName: $userName, password: $password) {
-     token
-     id
-     email
-     userName
-     createdAt
-   }
- }
- `,
-  variables: {
-    userName: "siyahulhaq",
-    password: "123456",
-  },
-};
-
-console.log(JSON.stringify(query))
+export const UPDATE_NETWORK_STATUS = gql`
+  mutation updateNetworkStatus($isConnected: Boolean) {
+    updateNetworkStatus(isConnected: $isConnected) @client
+  }
+`;

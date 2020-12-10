@@ -1,51 +1,22 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  USER_LOGOUT,
-  USER_SIGNIN_FAIL,
-  USER_SIGNIN_SUCCESS,
-  USER_SIGNUP_FAILED,
-  USER_SIGNUP_REQUEST,
-  USER_SIGNUP_SUCCESS,
-  USER_SIGN_LOGOUT,
-} from "../Constants/userConstants";
 import jwtDecode from "jwt-decode";
+import { wsCLient } from "../../App";
+import { USER_SIGNIN_SUCCESS } from "../Constants/userConstants";
 import { postUpdate } from "./postActions";
-import axios from "axios";
 
-export const userSignin = (userName, password) => async (dispatch) => {
-  axios
-    .post("http://192.168.1.12:5000", {
-      query:
-        "mutation Login($userName: String!, $password: String!){login(userName:$userName,password:$password){id token userName} }",
-      variables: {
-        userName,
-        password,
-      },
-    })
-    .then(({ data }) => {
-      const token = data.data.login.token;
-      const user = jwtDecode(token);
-      user.token = token;
-      AsyncStorage.setItem("token",token)
-        .then(() => {
-          dispatch({
-            type: USER_SIGNIN_SUCCESS,
-            payload: user,
-          });
-        })
-        .catch((err) => {
-          dispatch({
-            type: USER_SIGNIN_FAIL,
-            payload: err,
-          });
-        });
-    })
-    .catch((err) => {
-      dispatch({ type: USER_SIGNIN_FAIL, payload: err });
-    });
+export const userSignin = ({ login },client) => async (dispatch) => {
+  const token = login.token;
+  await AsyncStorage.setItem('token',token);
+  await client?.resetStore();
+  const user = jwtDecode(token);
+  user.token = token;
+  dispatch({ type: USER_SIGNIN_SUCCESS, payload: user });
 };
 
-export const userSignOut = () => (dispatch) => {
+export const userSignOut = (client) => async (dispatch) => {
+  await client?.stop();
+  await client?.resetStore();
+  await wsCLient.close(true,true);
   AsyncStorage.removeItem("token")
     .then(() => {
       const data = null;

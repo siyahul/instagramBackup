@@ -1,19 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, TextInput, Image, Button, SafeAreaView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "../Loading";
-import {userSignin} from "../../Redux/Actions/userActions";
+import { userSignin } from "../../Redux/Actions/userActions";
 import { styles } from "./style";
+import { useMutation } from "@apollo/client";
+import { LOGIN_MUTATION } from "../../queries";
+import {
+  USER_SIGNIN_FAIL,
+  USER_SIGNIN_REQUEST,
+} from "../../Redux/Constants/userConstants";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const userSignIn = useSelector((state) => state.userSignIn);
+  const [signIn, { data, loading, error, client }] = useMutation(
+    LOGIN_MUTATION,
+    {
+      fetchPolicy: "no-cache",
+      variables: { userName: email, password: password },
+    }
+  );
 
-  const loginReq = () => {
-    dispatch(userSignin(email,password));
-  };
+  useEffect(() => {
+    if (loading) {
+      dispatch({
+        type: USER_SIGNIN_REQUEST,
+      });
+    }
+    if (data) {
+      dispatch(userSignin(data,client));
+    }
+    if (error) {
+      dispatch({
+        type: USER_SIGNIN_FAIL,
+        payload: error,
+      });
+    }
+  }, [data, loading, error]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -42,7 +68,7 @@ const Login = () => {
         ) : (
           <Button
             title="Login"
-            onPress={() => loginReq()}
+            onPress={() => signIn()}
             disabled={userSignIn.loading}
           />
         )}

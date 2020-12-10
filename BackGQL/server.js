@@ -22,7 +22,12 @@ const server = new ApolloServer({
   resolvers,
   context: ({ req, connection }) => ({ req, pubSub, connection }),
   subscriptions: {
-    onConnect: ({authorization}) => {
+    onDisconnect:()=>{
+      console.log("disconnected");
+    },
+    onConnect: (con) => {
+      console.log(con);
+      const {headers:{ authorization}} = con;
       const context = {
         req: {
           headers: {
