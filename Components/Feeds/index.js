@@ -12,12 +12,7 @@ import {
   LIKE_MUTATION,
   UNLIKE_MUTATION,
 } from "../../queries";
-import {
-  useApolloClient,
-  useMutation,
-  useQuery,
-  useSubscription,
-} from "@apollo/client";
+import { useMutation, useQuery, useSubscription } from "@apollo/client";
 import {
   LIST_POSTS_FAIL,
   LIST_POSTS_REQUESTS,
@@ -26,31 +21,29 @@ import {
 const Feeds = () => {
   const [indexOfPost, setIndexOfPost] = useState(0);
   const dispatch = useDispatch();
-  const [fetchedPosts, setFetchedPosts] = useState(null);
-  const [newsFetchErrors, setnewsFetchErrors] = useState(null);
   const state = useSelector((state) => state);
-  const client = useApolloClient();
   const {
     userSignIn: { userInfo },
     posts,
   } = state;
 
-  const { refetch, loading,data,error, startPolling, stopPolling } = useQuery(
+  const { refetch, loading, data, error, startPolling, stopPolling } = useQuery(
     FETCH_NEWS_QUERY,
     {
-      fetchPolicy:"no-cache",
-      onCompleted: ({ getNews }) => {
+      fetchPolicy: "no-cache",
+      onCompleted: () => {
         stopPolling();
-        setFetchedPosts(getNews);
       },
       onError: (error) => {
-        
+        if (error.networkError) {
+          startPolling();
+        }
       },
-      pollInterval: 100,
+      pollInterval: 500,
     }
   );
   const [like] = useMutation(LIKE_MUTATION, {
-    onError: (error) => {
+    onError: () => {
       const oldPosts = posts.data;
       const newData = [...oldPosts];
       const uid = userInfo.id;
@@ -63,7 +56,7 @@ const Feeds = () => {
     },
   });
   const [unlike] = useMutation(UNLIKE_MUTATION, {
-    onError: (error) => {
+    onError: () => {
       const oldPosts = posts.data;
       const newData = [...oldPosts];
       const uid = userInfo.id;
@@ -75,7 +68,9 @@ const Feeds = () => {
     },
   });
 
-  const subscribe = useSubscription(GET_NEWS_SUBSCRIPTION,{fetchPolicy:"no-cache"});
+  const subscribe = useSubscription(GET_NEWS_SUBSCRIPTION, {
+    fetchPolicy: "no-cache",
+  });
 
   useEffect(() => {
     if (subscribe.data) {
@@ -99,7 +94,7 @@ const Feeds = () => {
         payload: error,
       });
     }
-  }, [data, error,loading]);
+  }, [data, error, loading]);
 
   const handleLike = (id, value) => {
     setIndexOfPost(id);
