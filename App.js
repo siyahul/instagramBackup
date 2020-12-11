@@ -18,6 +18,7 @@ import { WebSocketLink } from "@apollo/client/link/ws";
 import { getMainDefinition } from "@apollo/client/utilities";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SubscriptionClient } from "subscriptions-transport-ws";
+import WSProvider from "./WSProvider";
 
 const serverAddress = "192.168.1.12:5000";
 
@@ -35,21 +36,18 @@ const authLink = setContext(async (_, { headers }) => {
   };
 });
 
-export const wsCLient = new SubscriptionClient(
-  `ws://${serverAddress}/graphql`,
-  {
-    reconnect: true,
-    lazy: true,
-    connectionParams: async () => {
-      const token = await AsyncStorage.getItem("token");
-      return {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      };
-    },
-  }
-);
+const wsCLient = new SubscriptionClient(`ws://${serverAddress}/graphql`, {
+  reconnect: true,
+  lazy: true,
+  connectionParams: async () => {
+    const token = await AsyncStorage.getItem("token");
+    return {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    };
+  },
+});
 
 wsCLient.onConnecting(() => {
   console.log(`Connecting to ws://${serverAddress}/graphql`);
@@ -94,11 +92,13 @@ export default function App() {
     return (
       <Provider store={store}>
         <ApolloProvider client={client}>
-          <NavigationContainer>
-            <SafeAreaView style={styles.container}>
-              <Routes />
-            </SafeAreaView>
-          </NavigationContainer>
+          <WSProvider value={wsCLient}>
+            <NavigationContainer>
+              <SafeAreaView style={styles.container}>
+                <Routes />
+              </SafeAreaView>
+            </NavigationContainer>
+          </WSProvider>
         </ApolloProvider>
       </Provider>
     );
