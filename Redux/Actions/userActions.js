@@ -15,7 +15,7 @@ export const userSignin = ({ login }, client) => async (dispatch) => {
 export const userSignOut = (client, wsCLient) => async (dispatch) => {
   await client?.stop();
   await client?.resetStore();
-  await wsCLient.close(true, true);
+  await wsCLient?.close(true, true);
   AsyncStorage.removeItem("token")
     .then(() => {
       const data = null;

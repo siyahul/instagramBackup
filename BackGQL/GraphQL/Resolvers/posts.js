@@ -76,47 +76,64 @@ module.exports = {
         throw new Error(err);
       }
     },
-    async getNews(_, __, context) {
+    async getNews(_, { no, lastPostId }, context) {
+      if(lastPostId === ""){
+        lastPostId = null;
+      }
       const { id } = checkAuth(context);
       const user = await User.findById(id);
       const posts = await Post.find().sort({ createdAt: -1 });
-      const postOfFollowings = posts.filter((post) => {
+      let postOfFollowings = posts.filter((post) => {
         const findFollowing = user.followings.find(
           (follwing) => String(follwing) === String(post.user)
         );
         return String(post.user) === String(findFollowing);
       });
 
-      const returnPosts = postOfFollowings.map(async (post) => {
-        const user = await User.findById(post.user);
-        const {
-          id,
-          caption,
-          createdAt,
-          comments,
-          likes,
-          image,
-          likesCount,
-          commentsCount,
-        } = post;
+      if (postOfFollowings.length > no && !lastPostId) {
+       postOfFollowings = postOfFollowings.splice(0, no);
+      } else if (postOfFollowings.length > no && lastPostId) {
+        const index = postOfFollowings.findIndex(
+          (post) => String(post._id) === String(lastPostId)
+        );
+        postOfFollowings = postOfFollowings.splice(index+1, no);
+      } else if (postOfFollowings.length <= 0) {
+        postOfFollowings = [];
+      }
+      if (postOfFollowings.length > 0) {
+        const returnPosts = postOfFollowings.map(async (post) => {
+          const user = await User.findById(post.user);
+          const {
+            id,
+            caption,
+            createdAt,
+            comments,
+            likes,
+            image,
+            likesCount,
+            commentsCount,
+          } = post;
 
-        return {
-          id,
-          caption,
-          createdAt,
-          comments,
-          likes,
-          image,
-          likesCount,
-          commentsCount,
-          user,
-        };
-      });
-      return returnPosts;
+          return {
+            id,
+            caption,
+            createdAt,
+            comments,
+            likes,
+            image,
+            likesCount,
+            commentsCount,
+            user,
+          };
+        });
+        return returnPosts;
+      } else {
+        return postOfFollowings;
+      }
     },
     async getMyPosts(_, __, context) {
       const user = checkAuth(context);
-      console.log(user);
+
       const { id } = user;
       try {
         const posts = await Post.find({ user: id }).sort({ createdAt: -1 });
@@ -157,10 +174,8 @@ module.exports = {
   Mutation: {
     async deletePost(_, { postId }, context) {
       const user = checkAuth(context);
-      console.log(user);
       try {
         const post = await Post.findById(postId);
-        console.log(post);
         if (post) {
           if (user.userName === post.userName) {
             await post.delete();

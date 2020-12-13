@@ -26,7 +26,6 @@ const server = new ApolloServer({
       console.log("disconnected");
     },
     onConnect: (con) => {
-      console.log(con);
       const {headers:{ authorization}} = con;
       const context = {
         req: {
@@ -36,7 +35,7 @@ const server = new ApolloServer({
         },
       };
       const user = checkAuth(context);
-      console.log(user);
+      console.log(user?.email,"connected");
       return {
         currentUser: user,
       };

@@ -42,7 +42,6 @@ const usersResolvers = {
   },
   Mutation: {
     async followUser(_, { userId }, context) {
-      console.log(userId);
       const { id } = checkAuth(context);
       const user = await User.findById(id);
       const followUser = await User.findById(userId);
@@ -98,7 +97,6 @@ const usersResolvers = {
       }
     },
     async login(_, { userName, password }) {
-      console.log("login");
       const { errors, valid } = validateLoginInput(userName, password);
       if (!valid) {
         throw new UserInputError("Errors", { errors });
@@ -106,7 +104,6 @@ const usersResolvers = {
       const user = await User.findOne({ userName });
       if (!user) {
         errors.general = "User not found";
-        console.log(errors ,valid);
         throw new UserInputError("User not found", { errors });
       }
       const matchPassword = await bcrypt.compareSync(password, user.password);

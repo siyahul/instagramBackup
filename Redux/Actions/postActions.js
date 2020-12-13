@@ -24,7 +24,6 @@ export const fetchPosts = (posts) => async (dispatch, getState) => {
       return { ...post, liked: false, likes };
     }
   });
-  console.log(newValue);
   dispatch({
     type: LIST_POSTS_SUCCESS,
     payload: newValue,

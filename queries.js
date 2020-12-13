@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const FETCH_NEWS_QUERY = gql`
-query {
-  getNews {
+query GetNews($no:Int!,$lastPostId:String!){
+  getNews(no:$no,lastPostId:$lastPostId) {
     id
     createdAt
     image

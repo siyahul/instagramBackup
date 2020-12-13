@@ -7,7 +7,6 @@ module.exports = {
     async likePost(_, { postId }, context) {
       const user = checkAuth(context);
       const post = await Post.findById(postId);
-      console.log(user.id);
       if (post) {
         const alreadyLiked = post.likes.find(
           (like) => like.userId === user.id

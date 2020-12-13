@@ -41,7 +41,7 @@ module.exports = gql`
   type Query {
     getPosts: [Post]
     getMyPosts: [Post]
-    getNews:[Post]
+    getNews(no:Int!,lastPostId:String):[Post]
     getPost(postId: ID!): Post
     getFollowingUsers:[User]
     getUsers:[User]
