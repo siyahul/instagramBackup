@@ -76,30 +76,17 @@ module.exports = {
         throw new Error(err);
       }
     },
-    async getNews(_, { no, lastPostId }, context) {
-      if(lastPostId === ""){
-        lastPostId = null;
-      }
+    async getNews(_, { first, offset = 0 }, context) {
       const { id } = checkAuth(context);
       const user = await User.findById(id);
       const posts = await Post.find().sort({ createdAt: -1 });
-      let postOfFollowings = posts.filter((post) => {
+      const postOfFollowings = posts.filter((post) => {
         const findFollowing = user.followings.find(
           (follwing) => String(follwing) === String(post.user)
         );
         return String(post.user) === String(findFollowing);
       });
 
-      if (postOfFollowings.length > no && !lastPostId) {
-       postOfFollowings = postOfFollowings.splice(0, no);
-      } else if (postOfFollowings.length > no && lastPostId) {
-        const index = postOfFollowings.findIndex(
-          (post) => String(post._id) === String(lastPostId)
-        );
-        postOfFollowings = postOfFollowings.splice(index+1, no);
-      } else if (postOfFollowings.length <= 0) {
-        postOfFollowings = [];
-      }
       if (postOfFollowings.length > 0) {
         const returnPosts = postOfFollowings.map(async (post) => {
           const user = await User.findById(post.user);
@@ -126,9 +113,16 @@ module.exports = {
             user,
           };
         });
-        return returnPosts;
+        const totalCount = returnPosts.length;
+
+        const news =
+          first === undefined
+            ? returnPosts.slice(offset)
+            : returnPosts.slice(offset, offset + first);
+
+        return { news, totalCount };
       } else {
-        return postOfFollowings;
+        throw new Error("No Posts found");
       }
     },
     async getMyPosts(_, __, context) {

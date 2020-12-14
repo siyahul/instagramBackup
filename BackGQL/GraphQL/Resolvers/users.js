@@ -18,7 +18,7 @@ const genarateToken = (user) => {
       userName: user.userName,
     },
     SECRET_KEY,
-    { expiresIn: 60*60 }
+    { expiresIn: 60 * 60 }
   );
 };
 
@@ -32,12 +32,12 @@ const usersResolvers = {
         throw new Error(err);
       }
     },
-    async getFollowingUsers(_,__,context) {
+    async getFollowingUsers(_, __, context) {
       const { id } = authVerify(context);
       const user = await User.findById(id);
-      const {followings} = user;
-      const users = await User.find({_id:followings});
-      return users
+      const { followings } = user;
+      const users = await User.find({ _id: followings });
+      return users;
     },
   },
   Mutation: {
@@ -101,7 +101,13 @@ const usersResolvers = {
       if (!valid) {
         throw new UserInputError("Errors", { errors });
       }
-      const user = await User.findOne({ userName });
+      let user;
+      const regex = /^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/;
+      if (userName.match(regex)) {
+        user = await User.findOne({ email: userName });
+      } else {
+        user = await User.findOne({ userName });
+      }
       if (!user) {
         errors.general = "User not found";
         throw new UserInputError("User not found", { errors });
@@ -131,16 +137,22 @@ const usersResolvers = {
         password,
         confirmPassword
       );
-      const user = await User.findOne({ userName });
-
+      const name = await User.findOne({ userName });
+      const emailAddress = await User.findOne({ email });
       if (!valid) {
-        throw new UserInputError("Errors", { errors });
+        throw new UserInputError("Error", { errors });
       }
-
-      if (user) {
+      if (name) {
         throw new UserInputError("userName is Taken", {
-          error: {
+          errors: {
             userName: "user name is taken",
+          },
+        });
+      }
+      if (emailAddress) {
+        throw new UserInputError("Email is Taken", {
+          errors: {
+            email: "Email is taken",
           },
         });
       }
@@ -151,7 +163,7 @@ const usersResolvers = {
         email,
         userName,
         password,
-        photoUrl:"",
+        photoUrl: "",
         createdAt: new Date().toISOString(),
         followers: [],
         followings: [],

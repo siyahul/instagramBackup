@@ -19,4 +19,21 @@ export const styles = StyleSheet.create({
       borderRadius: 5,
       marginBottom:10,
     },
+    signUpPrompt:{
+      flexDirection:'row',
+      alignItems:'center',
+      justifyContent:'center',
+      margin:10,
+    },
+    link:{
+      color:"dodgerblue",
+      textDecorationLine:'underline',
+    },error:{
+      width:'100%',
+      alignItems: "center",
+      justifyContent: "center"
+    },errorText:{
+      color:"red",
+      fontSize:14,
+    }
   });

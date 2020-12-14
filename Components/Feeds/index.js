@@ -20,27 +20,23 @@ import {
 const Feeds = () => {
   const [indexOfPost, setIndexOfPost] = useState(0);
   const dispatch = useDispatch();
+  const [totalCount, setTotalCount] = useState(0);
   const state = useSelector((state) => state);
   const {
     userSignIn: { userInfo },
     posts,
   } = state;
-
-  const [lastPostId, setLastPostId] = useState("");
-
-  const { client, loading } = useQuery(FETCH_NEWS_QUERY, {
-    variables: { no: 5, lastPostId: "" },
+  const { loading, fetchMore, } = useQuery(FETCH_NEWS_QUERY, {
     onCompleted: ({ getNews }) => {
-      const { id } = getNews[getNews.length - 1];
-      setLastPostId(id);
-      dispatch(fetchPosts(getNews));
+      setTotalCount(getNews.totalCount);
+      dispatch(fetchPosts(getNews.news));
     },
     onError: (err) => {
       dispatch({ type: LIST_POSTS_FAIL, payload: err });
     },
     fetchPolicy: "no-cache",
+    variables: { first: 5, offset: 0 },
   });
-
   useEffect(() => {
     if (loading) {
       dispatch({ type: LIST_POSTS_REQUESTS });
@@ -77,10 +73,10 @@ const Feeds = () => {
     fetchPolicy: "no-cache",
   });
 
-  useEffect(() => {
+     useEffect(() => {
     if (subscribe.data) {
       console.log(subscribe.data);
-      refetch();
+      
     }
   }, [subscribe.loading, subscribe.data, subscribe.error]);
 
@@ -100,7 +96,6 @@ const Feeds = () => {
     }
     dispatch(postUpdate(newData));
   };
-  console.log(posts);
   return (
     <>
       <FlatList
@@ -114,35 +109,40 @@ const Feeds = () => {
           posts.loading || loading ? (
             Loading
           ) : posts.error ? (
-            <Text>{posts.error}</Text>
+            <Text
+              style={{
+                textAlign: "center",
+                fontSize: 14,
+                color: "gray",
+                margin: 10,
+              }}
+            ></Text>
           ) : null
         }
         onEndReachedThreshold={0.1}
         onEndReached={() => {
-          if (!posts.error) {
+          if (totalCount > posts.data.length) {
             dispatch({
               type: LIST_POSTS_REQUESTS,
             });
-            client
-              .query({
-                query: FETCH_NEWS_QUERY,
-                fetchPolicy: "no-cache",
-                variables: { no: 5, lastPostId },
-              })
-              .then(({ data }) => {
-                const { getNews } = data;
-                if (getNews.length > 0) {
-                  const id = getNews[getNews.length - 1].id;
-                  setLastPostId(id);
-                  const updatePosts = [...posts.data, ...getNews];
-                  dispatch(fetchPosts(updatePosts));
+            fetchMore({
+              variables: { first: 5, offset: posts.data.length },
+            }).then(({ data: { getNews } }) => {
+              const newValue = getNews.news.map((post) => {
+                const liked = post.likes.find(
+                  (like) => like?.userId === userInfo?.id
+                );
+                const likes = post.likes.map((like) => like?.userId);
+
+                if (liked) {
+                  return { ...post, liked: true, likes };
                 } else {
-                  dispatch({
-                    type: LIST_POSTS_FAIL,
-                    payload: "no more posts",
-                  });
+                  return { ...post, liked: false, likes };
                 }
               });
+              const update = [...posts.data, ...newValue];
+              dispatch(postUpdate(update));
+            });
           }
         }}
       />

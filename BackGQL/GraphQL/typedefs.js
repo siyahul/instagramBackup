@@ -24,6 +24,10 @@ module.exports = gql`
     userId:ID!
     createdAt: String!
   }
+  type News{
+    news:[Post]
+    totalCount:Int!
+  }
   type User {
     id: ID!
     email: String!
@@ -41,7 +45,7 @@ module.exports = gql`
   type Query {
     getPosts: [Post]
     getMyPosts: [Post]
-    getNews(no:Int!,lastPostId:String):[Post]
+    getNews(first:Int,offset:Int):News
     getPost(postId: ID!): Post
     getFollowingUsers:[User]
     getUsers:[User]

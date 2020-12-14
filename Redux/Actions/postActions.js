@@ -15,8 +15,8 @@ export const fetchPosts = (posts) => async (dispatch, getState) => {
     const {
       userSignIn: { userInfo },
     } = getState();
-    const liked = post.likes.find((like) => like.userId === userInfo?.id);
-    const likes = post.likes.map((like) => like.userId);
+    const liked = post.likes.find((like) => like?.userId === userInfo?.id);
+    const likes = post.likes.map((like) => like?.userId);
 
     if (liked) {
       return { ...post, liked: true, likes };

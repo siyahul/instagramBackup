@@ -6,6 +6,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import Login from "../Components/Login";
+import SignUp from "../Components/Login/SignUp";
 import UserStory from "../Components/UserStory";
 import BottomHomeNavigator from "./BottomHomeNavigator";
 
@@ -35,13 +36,22 @@ const Routes = () => {
           />
         </>
       ) : (
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{
-            headerShown: false,
-          }}
-        />
+        <>
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="SignUp"
+            component={SignUp}
+            options={{
+              headerShown: false,
+            }}
+          />
+        </>
       )}
     </Stack.Navigator>
   );

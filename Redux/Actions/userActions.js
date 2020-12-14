@@ -3,7 +3,8 @@ import jwtDecode from "jwt-decode";
 import { USER_SIGNIN_SUCCESS } from "../Constants/userConstants";
 import { postUpdate } from "./postActions";
 
-export const userSignin = ({ login }, client) => async (dispatch) => {
+export const userSignin = (data, client) => async (dispatch) => {
+  const login = Object.values(data)[0];
   const token = login.token;
   await AsyncStorage.setItem("token", token);
   await client?.resetStore();
