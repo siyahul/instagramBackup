@@ -1,9 +1,5 @@
-import { HttpLink, split, useApolloClient } from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
-import { WebSocketLink } from "@apollo/client/link/ws";
-import { getMainDefinition } from "@apollo/client/utilities";
 import { createStackNavigator } from "@react-navigation/stack";
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import Login from "../Components/Login";
 import SignUp from "../Components/Login/SignUp";

@@ -5,48 +5,68 @@ import HomeStack from "./HomeRoute";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import DiscoveryScreen from "../Screens/Discovery";
 import Profile from "../Screens/Profile";
+import AddPostStack from "./AddPostStack";
+import { UploadProvider } from "../Providers/UploadProvider";
+
+const UploadProviderWrapper = () => {
+  return (
+    <UploadProvider>
+    <AddPostStack/>
+    </UploadProvider>
+  );
+};
+
+const MemorizedUploadProviderWrapper = React.memo(UploadProviderWrapper);
 
 const Tab = createBottomTabNavigator();
 const BottomHomeNavigator = () => {
-  
-    return (
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
-  
-            if (route.name === "Home") {
-              iconName = "ios-home";
-            } else if (route.name === "DiscoveryScreen") {
-              iconName = "ios-search";
-            } else if (route.name === "Add") {
-              iconName = focused ? "ios-add-circle" : "ios-add-circle-outline";
-            } else if (route.name === "Notification") {
-              iconName = focused
-                ? "ios-notifications"
-                : "ios-notifications-outline";
-            } else if (route.name === "Profile") {
-              iconName = "ios-person";
-            }
-  
-            // You can return any component that you like here!
-            return <Ionicons name={iconName} size={size} color={color} />;
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === "Home") {
+            iconName = "ios-home";
+          } else if (route.name === "DiscoveryScreen") {
+            iconName = "ios-search";
+          } else if (route.name === "Add") {
+            iconName = focused ? "ios-add-circle" : "ios-add-circle-outline";
+          } else if (route.name === "Notification") {
+            iconName = focused
+              ? "ios-notifications"
+              : "ios-notifications-outline";
+          } else if (route.name === "Profile") {
+            iconName = "ios-person";
+          }
+
+          // You can return any component that you like here!
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}
+      tabBarOptions={{
+        activeTintColor: "black",
+        inactiveTintColor: "gray",
+        showLabel: false,
+      }}
+    >
+      <Tab.Screen name="Home" component={HomeStack} />
+      {/* all others screens beyond this line needs to devolop */}
+      <Tab.Screen name="DiscoveryScreen" component={DiscoveryScreen} />
+      <Tab.Screen
+        name="Add"
+        component={MemorizedUploadProviderWrapper}
+        options={{
+          tabBarVisible: false,
+          tabBarVisibilityAnimationConfig: {
+            hide: { animation: "timing", config: { duration: 100 } },
           },
-        })}
-        tabBarOptions={{
-          activeTintColor: "black",
-          inactiveTintColor: "gray",
-          showLabel: false,
         }}
-      >
-        <Tab.Screen name="Home" component={HomeStack} />
-        {/* all others screens beyond this line needs to devolop */}
-        <Tab.Screen name="DiscoveryScreen" component={DiscoveryScreen} />
-        <Tab.Screen name="Add" component={Message} />
-        <Tab.Screen name="Notification" component={Message} />
-        <Tab.Screen name="Profile" component={Profile} />
-      </Tab.Navigator>
-    )
+      />
+      <Tab.Screen name="Notification" component={Message} />
+      <Tab.Screen name="Profile" component={Profile} />
+    </Tab.Navigator>
+  );
 };
 
 export default BottomHomeNavigator;

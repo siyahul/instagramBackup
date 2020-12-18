@@ -6,6 +6,7 @@ import {
   Button,
   SafeAreaView,
   Text,
+  Keyboard,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "../Loading";
@@ -66,79 +67,89 @@ const SignUp = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View>
-        <Image
-          style={styles.logo}
-          source={{
-            uri:
-              "https://i.pinimg.com/originals/57/6c/dd/576cdd470fdc0b88f4ca0207d2b471d5.png",
-          }}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Enter a Username"
-          onChangeText={(text) => setState({ ...state, userName: text })}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your Email Address"
-          onChangeText={(text) => setState({ ...state, email: text })}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          textContentType="password"
-          secureTextEntry={true}
-          onChangeText={(text) => setState({ ...state, password: text })}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          textContentType="password"
-          secureTextEntry={true}
-          onChangeText={(text) => setState({ ...state, confirmPassword: text })}
-        />
-        {userSignIn.loading ? (
-          <Loading color="gray" />
-        ) : (
-          <Button
-            title={"Create an Account"}
-            onPress={() => {
-              if (
-                state.password === state.confirmPassword &&
-                state.userName !== "" &&
-                state.email !== "" &&
-                state.password !== "" &&
-                state.confirmPassword !== ""
-              ) {
-                signUp();
-              } else if (state.password !== state.confirmPassword) {
-                setErrors(["Password Must match"]);
-              } else {
-                setErrors(["Input fileds must not be empty"]);
-              }
+      <TouchableWithoutFeedback
+        onPress={() => {
+          Keyboard.dismiss();
+        }}
+      >
+        <View>
+          <Image
+            style={styles.logo}
+            source={{
+              uri:
+                "https://i.pinimg.com/originals/57/6c/dd/576cdd470fdc0b88f4ca0207d2b471d5.png",
             }}
-            disabled={userSignIn.loading}
           />
-        )}
-        <TouchableWithoutFeedback
-          onPress={() => {
-            navigation.goBack();
-          }}
-        >
-          <View style={styles.signUpPrompt}>
-            <Text>Already have an account? </Text>
-            <Text style={styles.link}>Login</Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-      {errors.length > 0 && (
-        <View style={styles.error}>
-          {errors.map((err) => (
-            <Text style={styles.errorText} key={err}>{err}</Text>
-          ))}
+          <TextInput
+            style={styles.input}
+            placeholder="Enter a Username"
+            onChangeText={(text) => setState({ ...state, userName: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your Email Address"
+            onChangeText={(text) => setState({ ...state, email: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            textContentType="password"
+            secureTextEntry={true}
+            onChangeText={(text) => setState({ ...state, password: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            textContentType="password"
+            secureTextEntry={true}
+            onChangeText={(text) =>
+              setState({ ...state, confirmPassword: text })
+            }
+          />
+          {userSignIn.loading ? (
+            <Loading color="gray" />
+          ) : (
+            <Button
+              title={"Create an Account"}
+              onPress={() => {
+                if (
+                  state.password === state.confirmPassword &&
+                  state.userName !== "" &&
+                  state.email !== "" &&
+                  state.password !== "" &&
+                  state.confirmPassword !== ""
+                ) {
+                  signUp();
+                } else if (state.password !== state.confirmPassword) {
+                  setErrors(["Password Must match"]);
+                } else {
+                  setErrors(["Input fileds must not be empty"]);
+                }
+              }}
+              disabled={userSignIn.loading}
+            />
+          )}
+          <TouchableWithoutFeedback
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <View style={styles.signUpPrompt}>
+              <Text>Already have an account? </Text>
+              <Text style={styles.link}>Login</Text>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
-      )}
+        {errors.length > 0 && (
+          <View style={styles.error}>
+            {errors.map((err) => (
+              <Text style={styles.errorText} key={err}>
+                {err}
+              </Text>
+            ))}
+          </View>
+        )}
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   );
 };

@@ -26,7 +26,7 @@ const Feeds = () => {
     userSignIn: { userInfo },
     posts,
   } = state;
-  const { loading, fetchMore, } = useQuery(FETCH_NEWS_QUERY, {
+  const { loading, fetchMore } = useQuery(FETCH_NEWS_QUERY, {
     onCompleted: ({ getNews }) => {
       setTotalCount(getNews.totalCount);
       dispatch(fetchPosts(getNews.news));
@@ -73,10 +73,18 @@ const Feeds = () => {
     fetchPolicy: "no-cache",
   });
 
-     useEffect(() => {
+  useEffect(() => {
     if (subscribe.data) {
-      console.log(subscribe.data);
-      
+      setTotalCount(totalCount + 1);
+      const { newPostFromFollowings } = subscribe.data;
+      const newPost = { ...newPostFromFollowings, liked: false };
+      if (posts.data) {
+        const updatePosts = [newPost, ...posts.data];
+        dispatch(postUpdate(updatePosts));
+      } else {
+        const updatePosts = [newPost];
+        dispatch(postUpdate(updatePosts));
+      }
     }
   }, [subscribe.loading, subscribe.data, subscribe.error]);
 
