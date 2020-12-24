@@ -2,10 +2,13 @@ const {
   AuthenticationError,
   UserInputError,
   withFilter,
-} = require("apollo-server");
+} = require("apollo-server-express");
 const Post = require("../../Models/postModel");
 const User = require("../../Models/userModel");
 const checkAuth = require("../../utils/auth-verify");
+const path = require("path");
+const fs = require("fs");
+const serverAddress = require("../../serverAddress");
 
 module.exports = {
   Query: {
@@ -184,9 +187,22 @@ module.exports = {
         throw new Error(err);
       }
     },
+    async uploadImage(_, { file }, context) {
+      const { id, userName } = checkAuth(context);
+      const user = await User.findById(id);
+      if (user) {
+        const { createReadStream, filename } = await file;
+        const stream = createReadStream();
+        const pathName = path.join(__dirname, `/public/images/${filename}`);
+        await stream.pipe(fs.createWriteStream(pathName));
+        return { url: `http://${serverAddress}:5000/images/${pathname}` };
+      }
+    },
     async createPost(_, { caption, image }, context) {
       const { id, userName } = checkAuth(context);
       const user = await User.findById(id);
+
+      console.log(caption, image);
 
       if (caption.trim() === "") {
         throw new UserInputError("caption needed");

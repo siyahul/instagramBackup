@@ -1,15 +1,25 @@
-const { ApolloServer, PubSub } = require("apollo-server");
+const http = require("http");
+const { ApolloServer, PubSub } = require("apollo-server-express");
 const mongoose = require("mongoose");
 const typeDefs = require("./GraphQL/typedefs");
 const resolvers = require("./GraphQL/Resolvers");
-const { MONGODB } = require("./config");
+//const { MONGODB } = require("./config");
 const checkAuth = require("./utils/auth-verify");
+const express = require("express");
+const app = express();
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const fileupload = require("express-fileupload");
+const serverAddress = require("./serverAddress");
 
 mongoose
-  .connect(MONGODB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(
+    "mongodb+srv://admin:QsZaW1508@cluster0.sd3ae.mongodb.net/Instagram?retryWrites=true&w=majority",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => {
     console.log("DB Connected");
   })
@@ -22,11 +32,14 @@ const server = new ApolloServer({
   resolvers,
   context: ({ req, connection }) => ({ req, pubSub, connection }),
   subscriptions: {
-    onDisconnect:()=>{
+    onDisconnect: () => {
       console.log("disconnected");
     },
     onConnect: (con) => {
-      const {headers:{ authorization}} = con;
+      console.log(con);
+      const {
+        headers: { authorization },
+      } = con;
       const context = {
         req: {
           headers: {
@@ -35,7 +48,7 @@ const server = new ApolloServer({
         },
       };
       const user = checkAuth(context);
-      console.log(user?.email,"connected");
+      console.log(user.email, "connected");
       return {
         currentUser: user,
       };
@@ -43,6 +56,30 @@ const server = new ApolloServer({
   },
 });
 
-server
-  .listen({ port: 5000 })
-  .then((res) => console.log(`server started ${res.url}`));
+const httpServer = http.createServer(app);
+server.installSubscriptionHandlers(httpServer);
+server.applyMiddleware({ app });
+
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(fileupload());
+app.post("/upload", (req, res) => {
+  const image = req.files.file;
+  console.log(image);
+  const ext = image.mimetype.split("/").pop();
+  const fileTarget = "images/" + Date.now() + "." + ext;
+  image.mv("public/" + fileTarget, (err, done) => {
+    if (!err) {
+      res.status(201).json({url: `http://${serverAddress}:5000/`+fileTarget});
+    } else {
+      res.status(401).json({ error: "File upload error"});
+    }
+  });
+});
+
+app.use(express.static("public"));
+
+httpServer.listen({ port: 5000 }, () => {
+  console.log(`server started on 5000`);
+});

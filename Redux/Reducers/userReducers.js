@@ -19,6 +19,8 @@ import {
         return { ...state, loading: false, error: action.payload };
       case 'USER_FROM_LOCALSTORAGE':
         return { ...state, loading: false, userInfo: action.payload };
+      case 'UPDATE_USER':
+        return { ...state, loading: false, userInfo: action.payload};
       case USER_LOGOUT:
         return {}
       default:

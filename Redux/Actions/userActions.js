@@ -10,6 +10,8 @@ export const userSignin = (data, client) => async (dispatch) => {
   await client?.resetStore();
   const user = jwtDecode(token);
   user.token = token;
+  user.followings= login.followings;
+  user.followers = login.followers;
   dispatch({ type: USER_SIGNIN_SUCCESS, payload: user });
 };
 

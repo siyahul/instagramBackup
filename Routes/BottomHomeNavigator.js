@@ -3,20 +3,30 @@ import React from "react";
 import Message from "../Screens/Message";
 import HomeStack from "./HomeRoute";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import DiscoveryScreen from "../Screens/Discovery";
 import Profile from "../Screens/Profile";
 import AddPostStack from "./AddPostStack";
 import { UploadProvider } from "../Providers/UploadProvider";
+import DiscoveryRoute from "./DiscoveryRoute";
+import { SearchProvider } from "../Providers/SearchProvider";
 
 const UploadProviderWrapper = () => {
   return (
     <UploadProvider>
-    <AddPostStack/>
+      <AddPostStack />
     </UploadProvider>
   );
 };
 
+const SearchContextWrapper = () => {
+  return (
+    <SearchProvider>
+      <DiscoveryRoute />
+    </SearchProvider>
+  );
+};
+
 const MemorizedUploadProviderWrapper = React.memo(UploadProviderWrapper);
+const MemorizedSearchContextWrapper = React.memo(SearchContextWrapper);
 
 const Tab = createBottomTabNavigator();
 const BottomHomeNavigator = () => {
@@ -52,7 +62,10 @@ const BottomHomeNavigator = () => {
     >
       <Tab.Screen name="Home" component={HomeStack} />
       {/* all others screens beyond this line needs to devolop */}
-      <Tab.Screen name="DiscoveryScreen" component={DiscoveryScreen} />
+      <Tab.Screen
+        name="DiscoveryScreen"
+        component={MemorizedSearchContextWrapper}
+      />
       <Tab.Screen
         name="Add"
         component={MemorizedUploadProviderWrapper}

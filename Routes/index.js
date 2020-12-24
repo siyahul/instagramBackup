@@ -10,6 +10,7 @@ const Stack = createStackNavigator();
 
 const Routes = () => {
   const { userInfo } = useSelector((state) => state.userSignIn);
+
   return (
     <Stack.Navigator>
       {/* home screen */}

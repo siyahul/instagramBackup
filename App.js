@@ -10,20 +10,19 @@ import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
-  HttpLink,
   split,
 } from "@apollo/client";
+import { createUploadLink } from "apollo-upload-client";
 import { setContext } from "@apollo/client/link/context";
 import { WebSocketLink } from "@apollo/client/link/ws";
 import { getMainDefinition } from "@apollo/client/utilities";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 import WSProvider from "./WSProvider";
+import serverAddress from "./serverAddress"
 
-const serverAddress = "192.168.1.12:5000";
-
-const httpLink = new HttpLink({
-  uri: `http://${serverAddress}/`,
+const uploadLink = createUploadLink({
+  uri: `http://${serverAddress}/graphql`,
 });
 
 const authLink = setContext(async (_, { headers }) => {
@@ -72,7 +71,7 @@ const splitLink = split(
     );
   },
   wsLink,
-  authLink.concat(httpLink)
+  authLink.concat(uploadLink),
 );
 const client = new ApolloClient({
   link: splitLink,

@@ -7,14 +7,12 @@ import { data } from "../Datas/story";
 import jwtDecode from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { userSignOut } from "./Actions/userActions";
-
+import serverAddress from "../serverAddress";
+import { GET_USER_QUERY } from "../queries";
 
 const initialState = {
   userSignIn: {
     userInfo: null,
-  },
-  userSignUp: {
-    userInfo: AsyncStorage.getItem('token'),
   },
   posts: {
     data: null,
@@ -30,7 +28,6 @@ const reducer = combineReducers({
   stories: storiesReducer,
 });
 
-
 let composeEnhancer = compose;
 if (__DEV__) {
   composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -42,19 +39,44 @@ const store = createStore(
   composeEnhancer(applyMiddleware(thunk))
 );
 
-async function getToken(){
-  const {dispatch} = store;
-  const token = await AsyncStorage.getItem('token');
+async function getToken() {
+  const { dispatch } = store;
+  const token = await AsyncStorage.getItem("token");
   if (token) {
     const user = jwtDecode(token);
+    const jsonRes = await fetch(`http://${serverAddress}/graphql`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: `
+        query GetUser($userId:ID!) {
+          getUser(userId:$userId){
+            id
+            email
+            userName
+            createdAt
+            followers
+            followings
+          }
+        }
+      `,
+        variables: { userId: user.id },
+      }),
+    });
+    const {
+      data: { getUser },
+    } = await jsonRes.json();
+
+    getUser.token = token;
+
     user.token = token;
     if (user.exp * 1000 > Date.now()) {
       dispatch({
         type: "USER_SIGNIN_SUCCESS",
-        payload: user,
+        payload: getUser,
       });
-    }else{
-      console.log("expired token user Logout")
+    } else {
+      console.log("expired token user Logout");
       dispatch(userSignOut());
     }
   }

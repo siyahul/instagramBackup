@@ -1,4 +1,4 @@
-const { gql } = require("apollo-server");
+const { gql } = require("apollo-server-express");
 
 module.exports = gql`
   type Post {
@@ -28,8 +28,13 @@ module.exports = gql`
     news:[Post]
     totalCount:Int!
   }
+  type File{
+    url:String!
+  }
   type User {
     id: ID!
+    followers:[ID]
+    followings: [ID]
     email: String!
     token: String!
     userName: String!
@@ -47,10 +52,13 @@ module.exports = gql`
     getMyPosts: [Post]
     getNews(first:Int,offset:Int):News
     getPost(postId: ID!): Post
+    getUser(userId: ID!): User
     getFollowingUsers:[User]
     getUsers:[User]
+    searchUsers(keyWord:String!):[User]
   }
   type Mutation {
+    uploadImage(file:Upload!):File!
     register(registerInput: RegisterInput): User!
     login(userName: String!, password: String!): User!
     createPost(caption: String!,image: String!): Post!

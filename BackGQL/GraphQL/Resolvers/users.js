@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../../Models/userModel");
 const checkAuth = require("../../utils/auth-verify");
-const { UserInputError } = require("apollo-server");
+const { UserInputError } = require("apollo-server-express");
 const {
   validateRegisterInput,
   validateLoginInput,
@@ -24,6 +24,38 @@ const genarateToken = (user) => {
 
 const usersResolvers = {
   Query: {
+    async getUser(_,{userId}){
+      try {
+        const user = await User.findById(userId);
+        if(user) {
+          return user
+        }
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
+    async searchUsers(_, { keyWord }) {
+      try {
+        if (keyWord.trim() !== "") {
+          keyWord = keyWord.toLowerCase();
+          const users = await User.find();
+          const usersFromName = users.filter((user) =>
+            user.userName.includes(keyWord)
+          );
+          if (usersFromName.length <= 0) {
+            const userFromEmail = users.filter((user) =>
+              user.email.includes(keyWord)
+            );
+            return userFromEmail;
+          }
+          return usersFromName;
+        }else{
+          throw new UserInputError("Keyword must be provided")
+        }
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
     async getUsers() {
       try {
         const users = await User.find();
@@ -42,6 +74,7 @@ const usersResolvers = {
   },
   Mutation: {
     async followUser(_, { userId }, context) {
+      console.log(context.req.headers);
       const { id } = checkAuth(context);
       const user = await User.findById(id);
       const followUser = await User.findById(userId);
@@ -97,6 +130,7 @@ const usersResolvers = {
       }
     },
     async login(_, { userName, password }) {
+      userName = userName.toLowerCase();
       const { errors, valid } = validateLoginInput(userName, password);
       if (!valid) {
         throw new UserInputError("Errors", { errors });
@@ -131,6 +165,8 @@ const usersResolvers = {
       context,
       info
     ) {
+      userName = userName.toLowerCase();
+      email = email.toLowerCase();
       const { valid, errors } = validateRegisterInput(
         userName,
         email,
