@@ -4,9 +4,10 @@ import { LinearGradient } from "expo-linear-gradient";
 import { styles } from "./styles";
 
 const ProfilePicture = ({ uri, size, visited }) => {
-  const url = uri.trim()  == ""
-  ? "https://thumbs.dreamstime.com/b/default-avatar-photo-placeholder-profile-icon-eps-file-easy-to-edit-default-avatar-photo-placeholder-profile-icon-124557887.jpg"
-  : uri;
+  const url =
+    uri.trim() == ""
+      ? "https://thumbs.dreamstime.com/b/default-avatar-photo-placeholder-profile-icon-eps-file-easy-to-edit-default-avatar-photo-placeholder-profile-icon-124557887.jpg"
+      : uri;
   const image = (
     <Image
       style={
@@ -14,10 +15,14 @@ const ProfilePicture = ({ uri, size, visited }) => {
           ? styles.small
           : size === "medium"
           ? styles.medium
-          : styles.image
+          : size === "x-small"
+          ? styles.xSmall
+          : size === 'large'
+          ? styles.image
+          : styles.xlarge
       }
       source={{
-        uri:url
+        uri: url,
       }}
     />
   );
@@ -34,7 +39,11 @@ const ProfilePicture = ({ uri, size, visited }) => {
               ? styles.gradientSmall
               : size === "medium"
               ? styles.gradientMedium
-              : styles.gradient
+              : size === "x-small"
+              ? styles.gradientXSmall
+              : size==='large'
+              ? styles.gradient
+              : styles.gradientxL
           }
         >
           {image}
@@ -46,7 +55,11 @@ const ProfilePicture = ({ uri, size, visited }) => {
               ? styles.viewSmall
               : size === "medium"
               ? styles.viewMedium
-              : styles.view
+              : size === "x-small"
+              ? styles.viewXSmall
+              : size === 'large'
+              ? styles.view
+              : styles.xLView
           }
         >
           {image}

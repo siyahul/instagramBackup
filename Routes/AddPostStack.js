@@ -31,7 +31,6 @@ const AddPostStack = () => {
 
   const [postImage] = useMutation(CREATE_POST, {
     onCompleted: (data) => {
-      console.log(data);
       setLoading(false);
       navigation.goBack();
     },
@@ -64,7 +63,6 @@ const AddPostStack = () => {
         },
       });
       response.json().then((data) => {
-        console.log(data);
         postImage({
           variables: { caption: selectedImage.caption, image: data.url },
         });

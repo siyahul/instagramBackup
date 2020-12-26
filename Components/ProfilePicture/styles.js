@@ -1,79 +1,123 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  container: {
-      
-  },
+  container: {},
   image: {
     height: 65,
     width: 65,
     borderRadius: 35,
-    borderWidth:2,
-    borderColor:"white",
-    backgroundColor:"white",
+    borderWidth: 2,
+    borderColor: "white",
+    backgroundColor: "white",
+  },
+  xlarge: {
+    height: 100,
+    width: 100,
+    borderRadius: 50,
+    borderWidth: 2,
+    borderColor: "white",
+    backgroundColor: "white",
   },
   small: {
     height: 32,
     width: 32,
     borderRadius: 16,
-    borderWidth:1,
-    borderColor:"white",
-    backgroundColor:"white",
+    borderWidth: 1,
+    borderColor: "white",
+    backgroundColor: "white",
   },
-  gradientSmall:{
+  viewXSmall: {
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: "white",
+    backgroundColor: "white",
+  },
+  xLView: {
+    height: 100,
+    width: 100,
+    borderRadius: 50,
+    borderWidth: 2,
+    borderColor: "white",
+    backgroundColor: "white",
+  },
+  xSmall: {
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: "white",
+    backgroundColor: "white",
+  },
+  gradientSmall: {
     height: 34,
-    width:34,
+    width: 34,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius:17,
+    borderRadius: 17,
   },
-  gradient:{
+  gradientXSmall: {
+    height: 21,
+    width: 21,
+    borderRadius: 11,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  gradient: {
     height: 70,
-    width:70,
+    width: 70,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius:45,
+    borderRadius: 45,
   },
-  gradientMedium:{
+  gradientMedium: {
     height: 48,
-    width:48,
+    width: 48,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius:26,
+    borderRadius: 26,
   },
-  viewSmall:{
+  gradientxL: {
+    height: 102,
+    width: 102,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 54,
+  },
+  viewSmall: {
     height: 34,
-    width:34,
+    width: 34,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius:17,
-    borderWidth:1,
-    borderColor:'lightgray'
+    borderRadius: 17,
+    borderWidth: 1,
+    borderColor: "lightgray",
   },
-  view:{
+  view: {
     height: 70,
-    width:70,
+    width: 70,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius:45,
-    borderWidth:1,
-    borderColor:'lightgray'
+    borderRadius: 45,
+    borderWidth: 1,
+    borderColor: "lightgray",
   },
-  viewMedium:{
+  viewMedium: {
     height: 48,
-    width:48,
+    width: 48,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius:26,
-    borderWidth:1,
-    borderColor:'lightgray'
+    borderRadius: 26,
+    borderWidth: 1,
+    borderColor: "lightgray",
   },
-  medium:{
+  medium: {
     height: 45,
     width: 45,
     borderRadius: 25,
-    borderWidth:1,
-    borderColor:"white",
-    backgroundColor:"white",
-  }
+    borderWidth: 1,
+    borderColor: "white",
+    backgroundColor: "white",
+  },
 });

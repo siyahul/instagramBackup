@@ -2,12 +2,26 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
 import Message from "../Screens/Message";
 import HomeStack from "./HomeRoute";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import Profile from "../Screens/Profile";
 import AddPostStack from "./AddPostStack";
 import { UploadProvider } from "../Providers/UploadProvider";
 import DiscoveryRoute from "./DiscoveryRoute";
 import { SearchProvider } from "../Providers/SearchProvider";
+import ProfileRoute from "./ProfileRoute";
+import ProfilePicture from "../Components/ProfilePicture";
+import { useSelector } from "react-redux";
+import {
+  faHeart as faHeartOut,
+  faPlusSquare,
+} from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import {
+  faHeart,
+  faHome as faHomeSolid,
+  faPlusSquare as faPlusSquareSolid,
+  faSearch as faSearchSolid,
+} from "@fortawesome/free-solid-svg-icons";
+import { Ionicons } from "@expo/vector-icons";
+import { ProfileProvider } from "../Providers/ProfileProvider";
 
 const UploadProviderWrapper = () => {
   return (
@@ -25,33 +39,57 @@ const SearchContextWrapper = () => {
   );
 };
 
+const ProfileContextWrapper = () => {
+  return (
+    <ProfileProvider>
+      <ProfileRoute />
+    </ProfileProvider>
+  );
+};
+
 const MemorizedUploadProviderWrapper = React.memo(UploadProviderWrapper);
 const MemorizedSearchContextWrapper = React.memo(SearchContextWrapper);
+const MemorizedProfileCOntextWrapper = React.memo(ProfileContextWrapper);
 
 const Tab = createBottomTabNavigator();
 const BottomHomeNavigator = () => {
+  const { userInfo } = useSelector((state) => state.userSignIn);
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-
-          if (route.name === "Home") {
-            iconName = "ios-home";
-          } else if (route.name === "DiscoveryScreen") {
-            iconName = "ios-search";
-          } else if (route.name === "Add") {
-            iconName = focused ? "ios-add-circle" : "ios-add-circle-outline";
-          } else if (route.name === "Notification") {
-            iconName = focused
-              ? "ios-notifications"
-              : "ios-notifications-outline";
-          } else if (route.name === "Profile") {
-            iconName = "ios-person";
-          }
-
           // You can return any component that you like here!
-          return <Ionicons name={iconName} size={size} color={color} />;
+          if (route.name === "Profile") {
+            return (
+              <ProfilePicture
+                uri={userInfo?.photoUrl}
+                size="small"
+                visited={!focused}
+              />
+            );
+          } else if (route.name === "Home") {
+            return <Ionicons name={"ios-home"} size={size + 2} color={color} />;
+          } else if (route.name === "Notification") {
+            return (
+              <FontAwesomeIcon
+                icon={!focused ? faHeartOut : faHeart}
+                size={size}
+                color={color}
+              />
+            );
+          } else if (route.name === "Add") {
+            return (
+              <FontAwesomeIcon
+                icon={focused ? faPlusSquareSolid : faPlusSquare}
+                size={size}
+                color={color}
+              />
+            );
+          } else if (route.name === "DiscoveryScreen") {
+            return (
+              <FontAwesomeIcon icon={faSearchSolid} size={size} color={color} />
+            );
+          }
         },
       })}
       tabBarOptions={{
@@ -77,7 +115,7 @@ const BottomHomeNavigator = () => {
         }}
       />
       <Tab.Screen name="Notification" component={Message} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen name="Profile" component={MemorizedProfileCOntextWrapper} />
     </Tab.Navigator>
   );
 };

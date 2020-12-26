@@ -21,12 +21,13 @@ const Feeds = () => {
   const [indexOfPost, setIndexOfPost] = useState(0);
   const dispatch = useDispatch();
   const [totalCount, setTotalCount] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
   const state = useSelector((state) => state);
   const {
     userSignIn: { userInfo },
     posts,
   } = state;
-  const { loading, fetchMore } = useQuery(FETCH_NEWS_QUERY, {
+  const { loading, fetchMore, refetch } = useQuery(FETCH_NEWS_QUERY, {
     onCompleted: ({ getNews }) => {
       setTotalCount(getNews.totalCount);
       dispatch(fetchPosts(getNews.news));
@@ -104,6 +105,35 @@ const Feeds = () => {
     }
     dispatch(postUpdate(newData));
   };
+
+  const refresh = () => {
+    setRefreshing(true);
+    fetchMore({
+      variables: { first: 5, offset: 0 },
+    }).then(
+      ({
+        data: {
+          getNews: { news },
+        },
+      }) => {
+        const update = news.map((post) => {
+          const liked = post.likes.find(
+            (like) => like?.userId === userInfo?.id
+          );
+          const likes = post.likes.map((like) => like?.userId);
+
+          if (liked) {
+            return { ...post, liked: true, likes };
+          } else {
+            return { ...post, liked: false, likes };
+          }
+        });
+        dispatch(postUpdate(update));
+        setRefreshing(false);
+      }
+    );
+  };
+
   return (
     <>
       <FlatList
@@ -127,6 +157,8 @@ const Feeds = () => {
             ></Text>
           ) : null
         }
+        refreshing={refreshing}
+        onRefresh={refresh}
         onEndReachedThreshold={0.1}
         onEndReached={() => {
           if (totalCount > posts.data.length) {

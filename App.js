@@ -79,13 +79,14 @@ const client = new ApolloClient({
   connectToDevTools: true,
 });
 
+
 export default function App() {
   //importing fonts with expo
   let [fontsLoaded] = useFonts({
     "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
     "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
   });
-  if (!fontsLoaded) {
+  if (!fontsLoaded  ) {
     return <AppLoading />;
   } else {
     return (

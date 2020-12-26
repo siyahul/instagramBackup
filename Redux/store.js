@@ -57,6 +57,7 @@ async function getToken() {
             createdAt
             followers
             followings
+            photoUrl
           }
         }
       `,

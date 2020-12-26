@@ -12,7 +12,7 @@ const Story = ({name,url,id,visited}) => {
     }
     return (
         <TouchableWithoutFeedback onPress={viewStory} style={styles.container}>
-            <ProfilePicture uri={url} visited={visited}/>
+            <ProfilePicture uri={url} visited={visited} size={'large'}/>
             <Text style={styles.name}>{name}</Text>
         </TouchableWithoutFeedback>
     )

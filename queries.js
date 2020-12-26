@@ -49,6 +49,34 @@ export const GET_USER_QUERY = gql`
   }
 `;
 
+export const GET_MY_POSTS = gql`
+  query getPosts {
+    getMyPosts {
+      id
+      caption
+      createdAt
+      likesCount
+      image
+      comments {
+        _id
+        createdAt
+        userName
+        body
+      }
+      user {
+        id
+      }
+      likes {
+        _id
+        userName
+        userId
+        createdAt
+      }
+      commentsCount
+    }
+  }
+`;
+
 export const CREATE_POST = gql`
   mutation CreatePost($caption: String!, $image: String!) {
     createPost(caption: $caption, image: $image) {
@@ -144,6 +172,7 @@ export const LOGIN_MUTATION = gql`
       createdAt
       followers
       followings
+      photoUrl
     }
   }
 `;
@@ -169,6 +198,7 @@ export const SIGNUP_MUTATION = gql`
       createdAt
       followers
       followings
+      photoUrl
     }
   }
 `;

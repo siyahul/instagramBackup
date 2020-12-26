@@ -12,6 +12,7 @@ export const userSignin = (data, client) => async (dispatch) => {
   user.token = token;
   user.followings= login.followings;
   user.followers = login.followers;
+  user.photoUrl = login.photoUrl;
   dispatch({ type: USER_SIGNIN_SUCCESS, payload: user });
 };
 
