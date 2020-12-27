@@ -54,6 +54,7 @@ const MemorizedProfileCOntextWrapper = React.memo(ProfileContextWrapper);
 const Tab = createBottomTabNavigator();
 const BottomHomeNavigator = () => {
   const { userInfo } = useSelector((state) => state.userSignIn);
+  const profileUri = userInfo?.photoUrl? userInfo?.photoUrl : ""
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -62,7 +63,7 @@ const BottomHomeNavigator = () => {
           if (route.name === "Profile") {
             return (
               <ProfilePicture
-                uri={userInfo?.photoUrl}
+                uri={profileUri}
                 size="small"
                 visited={!focused}
               />

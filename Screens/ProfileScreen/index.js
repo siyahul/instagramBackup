@@ -2,7 +2,6 @@ import { useApolloClient, useQuery } from "@apollo/client";
 import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Profile from "../../Components/Profile";
-import { useProfile } from "../../Providers/ProfileProvider";
 import { GET_MY_POSTS } from "../../queries";
 import { userSignOut } from "../../Redux/Actions/userActions";
 import { useWSContext } from "../../WSProvider";
@@ -17,8 +16,8 @@ const buttons = [
 ];
 const ProfileScreen = () => {
   const { userInfo } = useSelector((state) => state.userSignIn);
-  const followers = userInfo.followers.length;
-  const followings = userInfo.followings.length;
+  const followers = userInfo?.followers?.length;
+  const followings = userInfo?.followings?.length;
   const [refreshing, setRefreshing] = useState(false);
   const [posts, setPosts] = useState();
   const dispatch = useDispatch();
@@ -59,7 +58,7 @@ const ProfileScreen = () => {
 
   return (
     <Profile
-      uri={userInfo.photoUrl}
+      uri={userInfo?.photoUrl}
       buttons={buttons}
       buttonPress={buttonPress}
       followers={followers}

@@ -5,7 +5,7 @@ import { styles } from "./styles";
 
 const ProfilePicture = ({ uri, size, visited }) => {
   const url =
-    uri.trim() == ""
+    uri?.trim() == ""
       ? "https://thumbs.dreamstime.com/b/default-avatar-photo-placeholder-profile-icon-eps-file-easy-to-edit-default-avatar-photo-placeholder-profile-icon-124557887.jpg"
       : uri;
   const image = (

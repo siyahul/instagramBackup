@@ -15,7 +15,7 @@ const ProfileRoute = () => {
         name="Profile"
         component={ProfileScreen}
         options={{
-          title: userInfo.userName,
+          title: userInfo?.userName,
           headerLeft: () => (
             <View style={styles.profileHeader}>
               <FontAwesomeIcon icon={faPlus} size={24} color={"gray"} />
